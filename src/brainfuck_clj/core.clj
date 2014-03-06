@@ -21,7 +21,7 @@
                             next-cells (if (= next-ptr (count cells)) 
                                             (conj cells 0N) 
                                              cells)]
-                        (recur next-cells next-ptr (inc instruction-pointer)))
+                            (recur next-cells next-ptr (inc instruction-pointer)))
 
                 \.  (do
                         (print (char (nth cells current-cell)))
