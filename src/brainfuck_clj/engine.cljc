@@ -33,6 +33,9 @@
         (recur cells current-cell (inc instruction-pointer))))))
 
 #?(:cljs
-(defn bf [program-code input-str]
-  (let [reader (rt/string-reader input-str)]
-	(bf-interpreter program-code  #(rt/read-char reader)))))
+(defn bf 
+  ([program-code]
+   (bf program-code (constantly nil)))
+  ([program-code input-str]
+   (let [reader (rt/string-reader input-str)]
+     (bf-interpreter program-code  #(rt/read-char reader))))))
