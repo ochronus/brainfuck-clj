@@ -1,6 +1,7 @@
-(ns brainfuck-clj.engine)
+(ns brainfuck-clj.engine
+ (:require [cljs.tools.reader.reader-types :as rt]))
 
-(defn bf-interpreter [program-code]
+(defn bf-interpreter [program-code input-reader]
   (let [find-bracket (fn [opening-bracket closing-bracket instruction-pointer direction]
                        (loop [i (direction instruction-pointer) opened 0]
                          (condp = (nth program-code i)
@@ -22,7 +23,7 @@
         \.  (do
               (print (char (nth cells current-cell)))
               (recur cells current-cell (inc instruction-pointer)))
-        \,  (let [ch (.read System/in)]
+        \,  (let [ch (input-reader)]
               (recur (assoc cells current-cell ch) current-cell (inc instruction-pointer)))
         \[  (recur cells current-cell (inc (if (zero? (nth cells current-cell))
                                              (find-bracket \[ \] instruction-pointer inc)
@@ -30,3 +31,8 @@
         \]  (recur cells current-cell (find-bracket \] \[ instruction-pointer dec))
         nil cells ; end of the program
         (recur cells current-cell (inc instruction-pointer))))))
+
+#?(:cljs
+(defn bf [program-code input-str]
+  (let [reader (rt/string-reader input-str)]
+	(bf-interpreter program-code  #(rt/read-char reader)))))
